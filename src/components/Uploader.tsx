@@ -15,20 +15,25 @@ const Uploader: React.FC<UploaderProps> = ({ onUpload }) => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      setFileName(file.name);
-      Papa.parse<NumberLocation[]>(file, {
-        complete: (result: Papa.ParseResult<NumberLocation>) => {
-          const numbers: NumberLocation[] = result.data
-            .map((item: string[]) => ({
-              number: parseInt(item[0], 10),
-              location: item[1] || "Desconocido",
-            }))
-            .filter((item: NumberLocation) => !isNaN(item.number));
-          onUpload(numbers);
-        },
-      });
-    }
+    if (!file) return;
+
+    setFileName(file.name);
+
+    Papa.parse(file, {
+      complete: (result) => {
+        const rawData = result.data as string[][];
+        const numbers: NumberLocation[] = rawData
+          .map((item) => ({
+            number: parseInt(item[0], 10),
+            location: item[1] || "Desconocido",
+          }))
+          .filter((item) => !isNaN(item.number));
+
+        onUpload(numbers);
+      },
+      header: false,
+      skipEmptyLines: true,
+    });
   };
 
   return (
