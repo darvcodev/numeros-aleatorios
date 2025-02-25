@@ -5,9 +5,14 @@ import Confetti from "react-confetti";
 interface WinnerDisplayProps {
   winner: number;
   location: string;
+  prize: string;
 }
 
-const WinnerDisplay: React.FC<WinnerDisplayProps> = ({ winner, location }) => {
+const WinnerDisplay: React.FC<WinnerDisplayProps> = ({
+  winner,
+  location,
+  prize,
+}) => {
   return (
     <>
       <Confetti />
@@ -18,6 +23,9 @@ const WinnerDisplay: React.FC<WinnerDisplayProps> = ({ winner, location }) => {
         <p className="text-5xl font-bold text-gray-900">#{winner}</p>
         <h3 className="text-xl text-gray-700 mt-2">
           Desde: <span className="font-semibold">{location}</span>
+        </h3>
+        <h3 className="text-xl text-gray-700">
+          Premio: <span className="font-semibold">{prize}</span>
         </h3>
       </div>
     </>

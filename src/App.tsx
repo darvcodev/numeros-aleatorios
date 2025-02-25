@@ -15,6 +15,7 @@ const App: React.FC = () => {
   const [isShuffling, setIsShuffling] = useState<boolean>(false);
   const [displayNumber, setDisplayNumber] = useState<number>(0);
   const [step, setStep] = useState<number>(1);
+  const [prize, setPrize] = useState<string>("");
 
   const handleNumbers = (uploadedNumbers: NumberLocation[]) => {
     setNumbers(uploadedNumbers);
@@ -28,12 +29,13 @@ const App: React.FC = () => {
       const randomIndex = Math.floor(Math.random() * numbers.length);
       setWinner(numbers[randomIndex]);
       setIsShuffling(false);
-    }, 3000);
+    }, 10000);
   };
 
   const resetRaffle = () => {
     setWinner(null);
     setDisplayNumber(0);
+    setStep(2);
   };
 
   return (
@@ -54,6 +56,30 @@ const App: React.FC = () => {
                   : "bg-blue-500 hover:bg-blue-600"
               }`}
             >
+              ➡️ Continuar
+            </button>
+          </>
+        ) : step === 2 ? (
+          <>
+            <h1 className="text-4xl font-extrabold mb-6 text-gray-900">
+              🎁 Ingresar Premio
+            </h1>
+            <input
+              type="text"
+              placeholder="Ejemplo: CAMISETA"
+              value={prize}
+              onChange={(e) => setPrize(e.target.value)}
+              className="w-full p-3 border rounded-lg text-lg mb-4"
+            />
+            <button
+              onClick={() => setStep(3)}
+              disabled={!prize.trim()}
+              className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-300 ${
+                !prize.trim()
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+            >
               🚀 Jugar
             </button>
           </>
@@ -63,12 +89,11 @@ const App: React.FC = () => {
               <WinnerDisplay
                 winner={winner.number}
                 location={winner.location}
+                prize={prize}
               />
             ) : (
               <>
-                <h1 className="text-4xl font-extrabold mb-6 text-gray-900">
-                  Números Aleatorios
-                </h1>
+                <h1 className="text-4xl font-extrabold mb-6 text-gray-900">{`Premio: ${prize}`}</h1>
                 <Shuffler
                   numbers={numbers}
                   isShuffling={isShuffling}

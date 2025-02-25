@@ -38,7 +38,7 @@ El proyecto estará disponible en `http://localhost:5173/`.
 ## 📌 Características
 
 ✅ **Carga de archivo CSV** con números y ubicaciones.
-✅ **Animación de sorteo** con Framer Motion.
+✅ **Animación de premio** con Framer Motion.
 ✅ **Interfaz moderna** con Tailwind CSS.
 ✅ **Selección aleatoria de ganador**.
 ✅ **Confeti al ganar** 🎊.
@@ -50,7 +50,7 @@ El proyecto estará disponible en `http://localhost:5173/`.
 /src
  ├── components
  │   ├── Uploader.tsx       # Carga de archivos CSV
- │   ├── Shuffler.tsx       # Animación del sorteo
+ │   ├── Shuffler.tsx       # Animación del premio
  │   ├── WinnerDisplay.tsx  # Muestra al ganador
  ├── App.tsx                # Lógica principal
  ├── main.tsx               # Punto de entrada
@@ -60,7 +60,7 @@ El proyecto estará disponible en `http://localhost:5173/`.
 ## 🎯 Cómo Jugar
 
 1️⃣ **Cargar un archivo CSV** con números y ubicaciones.
-2️⃣ **Presionar "Jugar"** para avanzar a la pantalla de sorteo.
+2️⃣ **Presionar "Jugar"** para avanzar a la pantalla de premio.
 3️⃣ **Presionar "Elegir Ganador"** para iniciar la animación.
 4️⃣ **Ver el ganador en pantalla** y celebrar con confeti 🎉.
 5️⃣ **Presionar "Nuevo Intento"** para jugar nuevamente.
