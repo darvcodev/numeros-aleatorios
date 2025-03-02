@@ -22,7 +22,7 @@ const WinnerDisplay: React.FC<WinnerDisplayProps> = ({
         </h2>
         <p className="text-5xl font-bold text-gray-900">#{winner}</p>
         <h3 className="text-xl text-gray-700 mt-2">
-          Desde: <span className="font-semibold">{location}</span>
+          <span className="font-semibold">{location}</span>
         </h3>
         <h3 className="text-xl text-gray-700">
           Premio: <span className="font-semibold">{prize}</span>
