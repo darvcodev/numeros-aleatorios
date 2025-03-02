@@ -29,7 +29,7 @@ const App: React.FC = () => {
       const randomIndex = Math.floor(Math.random() * numbers.length);
       setWinner(numbers[randomIndex]);
       setIsShuffling(false);
-    }, 10000);
+    }, 7000);
   };
 
   const resetRaffle = () => {
