@@ -1,3 +1,5 @@
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/darvcodev/numeros-aleatorios)
+
 # Números Aleatorios
 
 Un proyecto de rifa aleatoria donde los usuarios pueden cargar un archivo CSV con números y ubicaciones, luego jugar para seleccionar un ganador al azar.
