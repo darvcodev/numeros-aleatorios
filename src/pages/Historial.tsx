@@ -104,7 +104,7 @@ const Historial: React.FC = () => {
         {historial.length > 0 && (
           <button
             onClick={downloadHistoryAsCSV}
-            className="w-full md:w-auto mt-4 py-3 px-6 rounded-lg font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-all duration-300"
+            className="w-full md:w-auto mt-4 py-3 px-6 rounded-lg font-semibold text-white cursor-pointer bg-blue-500 hover:bg-blue-600 transition-all duration-300"
           >
             📥 Descargar historial (.csv)
           </button>

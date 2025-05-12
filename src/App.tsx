@@ -108,8 +108,8 @@ const App: React.FC = () => {
               type="text"
               placeholder="Ejemplo: CAMISETA"
               value={prizeInput}
-              onChange={(e) => setPrizeInput(e.target.value)}
-              className="w-full p-3 border rounded-lg text-lg mb-4"
+              onChange={(e) => setPrizeInput(e.target.value.toUpperCase())}
+              className="w-full p-3 border rounded-lg text-lg mb-4 uppercase"
             />
             <button
               onClick={() => setStep(3)}
