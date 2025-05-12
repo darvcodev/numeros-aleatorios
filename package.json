@@ -22,6 +22,7 @@
     "react-confetti": "^6.2.2",
     "react-csv-reader": "^4.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.6.0",
     "tailwindcss": "^4.0.8"
   },
   "devDependencies": {

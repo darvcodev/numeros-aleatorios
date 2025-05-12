@@ -1,4 +1,4 @@
-// src/components/WinnerDisplay.tsx
+// WinnerDisplay.tsx
 import React from "react";
 import Confetti from "react-confetti";
 

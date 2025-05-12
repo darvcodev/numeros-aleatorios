@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// App.tsx
+import React, { useState, useEffect } from "react";
 import Uploader from "./components/Uploader";
 import Shuffler from "./components/Shuffler";
 import WinnerDisplay from "./components/WinnerDisplay";
@@ -16,6 +17,9 @@ const App: React.FC = () => {
   const [displayNumber, setDisplayNumber] = useState<number>(0);
   const [step, setStep] = useState<number>(1);
   const [prize, setPrize] = useState<string>("");
+  const [history, setHistory] = useState<
+    { number: number; location: string; prize: string; date: string }[]
+  >([]);
 
   const handleNumbers = (uploadedNumbers: NumberLocation[]) => {
     setNumbers(uploadedNumbers);
@@ -25,10 +29,37 @@ const App: React.FC = () => {
   const pickWinner = () => {
     setIsShuffling(true);
     setWinner(null);
+
     setTimeout(() => {
       const randomIndex = Math.floor(Math.random() * numbers.length);
-      setWinner(numbers[randomIndex]);
+      const winnerPicked = numbers[randomIndex];
+      setWinner(winnerPicked);
       setIsShuffling(false);
+
+      const now = new Date().toLocaleString("es-CO", {
+        timeZone: "America/Bogota",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
+      const updatedHistory = [
+        ...history,
+        {
+          number: winnerPicked.number,
+          location: winnerPicked.location,
+          prize,
+          date: now,
+        },
+      ];
+      setHistory(updatedHistory);
+      localStorage.setItem(
+        "historialGanadores",
+        JSON.stringify(updatedHistory)
+      );
     }, 3000);
   };
 
@@ -37,6 +68,13 @@ const App: React.FC = () => {
     setDisplayNumber(0);
     setStep(2);
   };
+
+  useEffect(() => {
+    const stored = localStorage.getItem("historialGanadores");
+    if (stored) {
+      setHistory(JSON.parse(stored));
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-700 flex items-center justify-center p-6">
