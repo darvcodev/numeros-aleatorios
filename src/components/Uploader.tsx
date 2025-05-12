@@ -2,13 +2,16 @@
 import React, { useState } from "react";
 import Papa from "papaparse";
 
-type NumberLocation = {
-  number: number;
-  location: string;
+type Participante = {
+  numero: string;
+  cedula: string;
+  nombre: string;
+  celular: string;
+  ubicacion: string;
 };
 
 type UploaderProps = {
-  onUpload: (numbers: NumberLocation[]) => void;
+  onUpload: (data: Participante[]) => void;
 };
 
 const Uploader: React.FC<UploaderProps> = ({ onUpload }) => {
@@ -21,30 +24,24 @@ const Uploader: React.FC<UploaderProps> = ({ onUpload }) => {
     setFileName(file.name);
 
     Papa.parse(file, {
-      complete: (result) => {
-        const rawData = result.data as string[][];
-        const numbers: NumberLocation[] = rawData
-          .map((item) => ({
-            number: parseInt(item[0], 10),
-            location: item[1] || "Desconocido",
-          }))
-          .filter((item) => !isNaN(item.number));
-
-        onUpload(numbers);
-      },
-      header: false,
+      header: true, // <- Leemos encabezados
       skipEmptyLines: true,
+      complete: (result) => {
+        const rawData = result.data as Papa.ParseResult<Participante>["data"];
+
+        const cleaned = rawData.filter(
+          (item) =>
+            item.numero && !isNaN(parseInt(item.numero)) && item.ubicacion
+        );
+
+        onUpload(cleaned);
+      },
     });
   };
 
   return (
     <div className="flex flex-col items-center bg-white p-6 rounded-xl border border-gray-300">
-      <label
-        htmlFor="file-upload"
-        className="text-lg font-semibold text-gray-700"
-      ></label>
-
-      <div className="relative w-full flex flex-col items-center p-4 border-2 border-dashed border-blue-500 rounded-lg cursor-pointer hover:bg-blue-50 transition">
+      <div className="relative w-full flex flex-col items-center p-4 border-2 border-dashed border-blue-500 rounded-lg cursor-pointer hover:bg-blue-50 transition mt-2">
         <input
           id="file-upload"
           type="file"

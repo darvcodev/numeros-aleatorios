@@ -26,7 +26,10 @@ const Shuffler: React.FC<ShufflerProps> = ({
     if (!isShuffling) return;
     const interval = setInterval(() => {
       const randomIndex = Math.floor(Math.random() * numbers.length);
-      setDisplayNumber(numbers[randomIndex].number);
+      const num = parseInt(numbers[randomIndex].number.toString());
+      if (!isNaN(num)) {
+        setDisplayNumber(num);
+      }
     }, 100);
 
     return () => clearInterval(interval);

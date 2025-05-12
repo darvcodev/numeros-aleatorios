@@ -1,28 +1,38 @@
-// App.tsx
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Uploader from "./components/Uploader";
 import Shuffler from "./components/Shuffler";
 import WinnerDisplay from "./components/WinnerDisplay";
 import "./index.css";
 
-type NumberLocation = {
-  number: number;
-  location: string;
+type Participante = {
+  numero: string;
+  cedula: string;
+  nombre: string;
+  celular: string;
+  ubicacion: string;
+  premio?: string;
+  fecha?: string;
+  hora?: string;
 };
 
 const App: React.FC = () => {
-  const [numbers, setNumbers] = useState<NumberLocation[]>([]);
-  const [winner, setWinner] = useState<NumberLocation | null>(null);
+  const [participants, setParticipants] = useState<Participante[]>([]);
+  const [winner, setWinner] = useState<Participante | null>(null);
   const [isShuffling, setIsShuffling] = useState<boolean>(false);
   const [displayNumber, setDisplayNumber] = useState<number>(0);
   const [step, setStep] = useState<number>(1);
-  const [prize, setPrize] = useState<string>("");
-  const [history, setHistory] = useState<
-    { number: number; location: string; prize: string; date: string }[]
-  >([]);
+  const [prizeInput, setPrizeInput] = useState<string>("");
+  const [history, setHistory] = useState<Participante[]>([]);
 
-  const handleNumbers = (uploadedNumbers: NumberLocation[]) => {
-    setNumbers(uploadedNumbers);
+  useEffect(() => {
+    const stored = localStorage.getItem("historialGanadores");
+    if (stored) {
+      setHistory(JSON.parse(stored));
+    }
+  }, []);
+
+  const handleNumbers = (uploaded: Participante[]) => {
+    setParticipants(uploaded);
     setWinner(null);
   };
 
@@ -31,8 +41,8 @@ const App: React.FC = () => {
     setWinner(null);
 
     setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * numbers.length);
-      const winnerPicked = numbers[randomIndex];
+      const randomIndex = Math.floor(Math.random() * participants.length);
+      const winnerPicked = participants[randomIndex];
       setWinner(winnerPicked);
       setIsShuffling(false);
 
@@ -46,15 +56,14 @@ const App: React.FC = () => {
         second: "2-digit",
       });
 
-      const updatedHistory = [
-        ...history,
-        {
-          number: winnerPicked.number,
-          location: winnerPicked.location,
-          prize,
-          date: now,
-        },
-      ];
+      const ganadorConFecha: Participante = {
+        ...winnerPicked,
+        premio: prizeInput,
+        fecha: now.split(",")[0],
+        hora: now.split(",")[1],
+      };
+
+      const updatedHistory = [...history, ganadorConFecha];
       setHistory(updatedHistory);
       localStorage.setItem(
         "historialGanadores",
@@ -69,13 +78,6 @@ const App: React.FC = () => {
     setStep(2);
   };
 
-  useEffect(() => {
-    const stored = localStorage.getItem("historialGanadores");
-    if (stored) {
-      setHistory(JSON.parse(stored));
-    }
-  }, []);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-700 flex items-center justify-center p-6">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg text-center">
@@ -87,9 +89,9 @@ const App: React.FC = () => {
             <Uploader onUpload={handleNumbers} />
             <button
               onClick={() => setStep(2)}
-              disabled={numbers.length === 0}
+              disabled={participants.length === 0}
               className={`w-full mt-4 py-3 px-6 rounded-lg font-semibold text-white transition-all duration-300 ${
-                numbers.length === 0
+                participants.length === 0
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-500 hover:bg-blue-600"
               }`}
@@ -105,15 +107,15 @@ const App: React.FC = () => {
             <input
               type="text"
               placeholder="Ejemplo: CAMISETA"
-              value={prize}
-              onChange={(e) => setPrize(e.target.value)}
+              value={prizeInput}
+              onChange={(e) => setPrizeInput(e.target.value)}
               className="w-full p-3 border rounded-lg text-lg mb-4"
             />
             <button
               onClick={() => setStep(3)}
-              disabled={!prize.trim()}
+              disabled={!prizeInput.trim()}
               className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-300 ${
-                !prize.trim()
+                !prizeInput.trim()
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-500 hover:bg-blue-600"
               }`}
@@ -125,25 +127,35 @@ const App: React.FC = () => {
           <>
             {winner ? (
               <WinnerDisplay
-                winner={winner.number}
-                location={winner.location}
-                prize={prize}
+                winner={parseInt(winner.numero)}
+                location={winner.ubicacion}
+                prize={winner.premio || prizeInput}
               />
             ) : (
               <>
-                <h1 className="text-4xl font-extrabold mb-6 text-gray-900">{`Premio: ${prize}`}</h1>
+                <h1 className="text-4xl font-extrabold mb-6 text-gray-900">{`Premio: ${prizeInput}`}</h1>
                 <Shuffler
-                  numbers={numbers}
+                  numbers={participants.map((p) => ({
+                    number: parseInt(p.numero),
+                    location: p.ubicacion,
+                  }))}
                   isShuffling={isShuffling}
-                  winner={winner}
+                  winner={
+                    winner && "numero" in winner && "ubicacion" in winner
+                      ? {
+                          number: parseInt((winner as Participante).numero),
+                          location: (winner as Participante).ubicacion,
+                        }
+                      : null
+                  }
                   displayNumber={displayNumber}
                   setDisplayNumber={setDisplayNumber}
                 />
                 <button
                   onClick={pickWinner}
-                  disabled={numbers.length === 0 || isShuffling}
+                  disabled={participants.length === 0 || isShuffling}
                   className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-300 mt-4 ${
-                    numbers.length === 0 || isShuffling
+                    participants.length === 0 || isShuffling
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-green-500 hover:bg-green-600"
                   }`}

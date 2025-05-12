@@ -1,11 +1,14 @@
-// Historial.tsx
 import React, { useEffect, useState } from "react";
 
 type Ganador = {
-  number: number;
-  location: string;
-  prize: string;
-  date: string;
+  numero: string;
+  cedula: string;
+  nombre: string;
+  celular: string;
+  ubicacion: string;
+  premio: string;
+  fecha: string;
+  hora: string;
 };
 
 const Historial: React.FC = () => {
@@ -18,24 +21,30 @@ const Historial: React.FC = () => {
     }
   }, []);
 
-  const downloadHistory = () => {
-    const historyData = localStorage.getItem("historialGanadores");
-    if (!historyData) return;
+  const downloadHistoryAsCSV = () => {
+    const header = [
+      "Número",
+      "Nombre",
+      "Cédula",
+      "Celular",
+      "Ubicación",
+      "Premio",
+      "Fecha",
+      "Hora",
+    ];
 
-    const historial = JSON.parse(historyData);
-
-    const header = ["#", "Ubicación", "Premio", "Fecha"];
-    const rows = historial.map((g: Ganador) => [
-      g.number,
-      g.location,
-      g.prize,
-      g.date,
+    const rows = historial.map((g) => [
+      g.numero,
+      g.nombre,
+      g.cedula,
+      g.celular,
+      g.ubicacion,
+      g.premio,
+      g.fecha,
+      g.hora,
     ]);
 
-    const csvContent = [
-      header.join(","),
-      ...rows.map((row: (string | number)[]) => row.join(",")),
-    ].join("\n");
+    const csvContent = [header, ...rows].map((row) => row.join(",")).join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -50,45 +59,56 @@ const Historial: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-6">
-        <h1 className="text-3xl font-bold mb-4 text-blue-600">
+      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-md p-6 overflow-x-auto">
+        <h1 className="text-3xl font-bold mb-6 text-blue-600 text-center">
           🏆 Historial de Ganadores
         </h1>
-        <table className="w-full table-auto border-collapse">
+
+        <table className="w-full table-auto border-collapse text-sm">
           <thead>
             <tr className="bg-blue-100">
-              <th className="p-2 border">#</th>
+              <th className="p-2 border">Número</th>
+              <th className="p-2 border">Nombre</th>
+              <th className="p-2 border">Cédula</th>
+              <th className="p-2 border">Celular</th>
               <th className="p-2 border">Ubicación</th>
               <th className="p-2 border">Premio</th>
               <th className="p-2 border">Fecha</th>
+              <th className="p-2 border">Hora</th>
             </tr>
           </thead>
           <tbody>
             {historial.length === 0 ? (
               <tr>
-                <td colSpan={4} className="text-center py-4 text-gray-500">
+                <td colSpan={7} className="text-center py-4 text-gray-500">
                   Aún no hay ganadores registrados.
                 </td>
               </tr>
             ) : (
               historial.map((g, i) => (
                 <tr key={i} className="text-center">
-                  <td className="border p-2">{g.number}</td>
-                  <td className="border p-2">{g.location}</td>
-                  <td className="border p-2">{g.prize}</td>
-                  <td className="border p-2">{g.date}</td>
+                  <td className="border p-2">{g.numero}</td>
+                  <td className="border p-2">{g.nombre}</td>
+                  <td className="border p-2">{g.cedula}</td>
+                  <td className="border p-2">{g.celular}</td>
+                  <td className="border p-2">{g.ubicacion}</td>
+                  <td className="border p-2">{g.premio}</td>
+                  <td className="border p-2">{g.fecha}</td>
+                  <td className="border p-2">{g.hora}</td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
 
-        <button
-          onClick={downloadHistory}
-          className="w-full py-3 px-6 rounded-lg font-semibold cursor-pointer text-white bg-blue-500 hover:bg-blue-600 transition-all duration-300 mt-4"
-        >
-          📥 Descargar historial (.csv)
-        </button>
+        {historial.length > 0 && (
+          <button
+            onClick={downloadHistoryAsCSV}
+            className="w-full md:w-auto mt-4 py-3 px-6 rounded-lg font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-all duration-300"
+          >
+            📥 Descargar historial (.csv)
+          </button>
+        )}
       </div>
     </div>
   );
