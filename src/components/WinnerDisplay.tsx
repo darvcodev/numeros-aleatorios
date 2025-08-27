@@ -6,12 +6,14 @@ interface WinnerDisplayProps {
   winner: number;
   location: string;
   prize: string;
+  name: string;
 }
 
 const WinnerDisplay: React.FC<WinnerDisplayProps> = ({
   winner,
   location,
   prize,
+  name,
 }) => {
   return (
     <>
@@ -21,6 +23,9 @@ const WinnerDisplay: React.FC<WinnerDisplayProps> = ({
           🎉 ¡Ganador! 🎉
         </h2>
         <p className="text-5xl font-bold text-gray-900">#{winner}</p>
+        <h3 className="text-xl text-blue-800">
+          <span className="font-semibold">{name}</span>
+        </h3>
         <h3 className="text-xl text-gray-700 mt-2">
           <span className="font-semibold">{location}</span>
         </h3>

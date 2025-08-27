@@ -130,6 +130,7 @@ const App: React.FC = () => {
                 winner={parseInt(winner.numero)}
                 location={winner.ubicacion}
                 prize={winner.premio || prizeInput}
+                name={winner.nombre}
               />
             ) : (
               <>
