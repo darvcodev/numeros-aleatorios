@@ -12,9 +12,10 @@ type Participante = {
 
 type UploaderProps = {
   onUpload: (data: Participante[]) => void;
+  onLocations: (locations: string[]) => void;
 };
 
-const Uploader: React.FC<UploaderProps> = ({ onUpload }) => {
+const Uploader: React.FC<UploaderProps> = ({ onUpload, onLocations }) => {
   const [fileName, setFileName] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,6 +35,8 @@ const Uploader: React.FC<UploaderProps> = ({ onUpload }) => {
             item.numero && !isNaN(parseInt(item.numero)) && item.ubicacion
         );
 
+        const locations = [...new Set(cleaned.map((item) => item.ubicacion))];
+        onLocations(locations);
         onUpload(cleaned);
       },
     });

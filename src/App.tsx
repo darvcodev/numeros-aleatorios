@@ -23,6 +23,8 @@ const App: React.FC = () => {
   const [step, setStep] = useState<number>(1);
   const [prizeInput, setPrizeInput] = useState<string>("");
   const [history, setHistory] = useState<Participante[]>([]);
+  const [locations, setLocations] = useState<string[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
 
   useEffect(() => {
     const stored = localStorage.getItem("historialGanadores");
@@ -36,13 +38,26 @@ const App: React.FC = () => {
     setWinner(null);
   };
 
+  const handleLocations = (locations: string[]) => {
+    setLocations(locations);
+  };
+
+  const handleLocationSelect = (location: string) => {
+    setSelectedLocation(location);
+    setStep(3);
+  };
+
   const pickWinner = () => {
     setIsShuffling(true);
     setWinner(null);
 
+    const filteredParticipants = selectedLocation
+      ? participants.filter((p) => p.ubicacion === selectedLocation)
+      : participants;
+
     setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * participants.length);
-      const winnerPicked = participants[randomIndex];
+      const randomIndex = Math.floor(Math.random() * filteredParticipants.length);
+      const winnerPicked = filteredParticipants[randomIndex];
       setWinner(winnerPicked);
       setIsShuffling(false);
 
@@ -78,6 +93,10 @@ const App: React.FC = () => {
     setStep(2);
   };
 
+  const filteredParticipantsForShuffler = selectedLocation
+    ? participants.filter((p) => p.ubicacion === selectedLocation)
+    : participants;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-700 flex items-center justify-center p-6">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg text-center">
@@ -86,7 +105,7 @@ const App: React.FC = () => {
             <h1 className="text-4xl font-extrabold mb-6 text-gray-900">
               📄 Cargar Archivo
             </h1>
-            <Uploader onUpload={handleNumbers} />
+            <Uploader onUpload={handleNumbers} onLocations={handleLocations} />
             <button
               onClick={() => setStep(2)}
               disabled={participants.length === 0}
@@ -102,6 +121,29 @@ const App: React.FC = () => {
         ) : step === 2 ? (
           <>
             <h1 className="text-4xl font-extrabold mb-6 text-gray-900">
+              📍 Seleccionar Ubicación
+            </h1>
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div
+                onClick={() => handleLocationSelect("")}
+                className="bg-gray-200 p-4 rounded-lg cursor-pointer hover:bg-gray-300 transition"
+              >
+                Todas
+              </div>
+              {locations.map((location) => (
+                <div
+                  key={location}
+                  onClick={() => handleLocationSelect(location)}
+                  className="bg-blue-100 p-4 rounded-lg cursor-pointer hover:bg-blue-200 transition"
+                >
+                  {location}
+                </div>
+              ))}
+            </div>
+          </>
+        ) : step === 3 ? (
+          <>
+            <h1 className="text-4xl font-extrabold mb-6 text-gray-900">
               🎁 Ingresar Premio
             </h1>
             <input
@@ -112,7 +154,7 @@ const App: React.FC = () => {
               className="w-full p-3 border rounded-lg text-lg mb-4 uppercase"
             />
             <button
-              onClick={() => setStep(3)}
+              onClick={() => setStep(4)}
               disabled={!prizeInput.trim()}
               className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-300 ${
                 !prizeInput.trim()
@@ -136,7 +178,7 @@ const App: React.FC = () => {
               <>
                 <h1 className="text-4xl font-extrabold mb-6 text-gray-900">{`Premio: ${prizeInput}`}</h1>
                 <Shuffler
-                  numbers={participants.map((p) => ({
+                  numbers={filteredParticipantsForShuffler.map((p) => ({
                     number: parseInt(p.numero),
                     location: p.ubicacion,
                   }))}
