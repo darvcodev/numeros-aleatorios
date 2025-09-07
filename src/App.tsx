@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { Routes, Route, Link } from "react-router-dom";
 import Uploader from "./components/Uploader";
 import Shuffler from "./components/Shuffler";
 import WinnerDisplay from "./components/WinnerDisplay";
+import Historial from "./pages/Historial";
 import "./index.css";
 
 type Participante = {
@@ -15,7 +17,7 @@ type Participante = {
   hora?: string;
 };
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
   const [participants, setParticipants] = useState<Participante[]>([]);
   const [winner, setWinner] = useState<Participante | null>(null);
   const [isShuffling, setIsShuffling] = useState<boolean>(false);
@@ -56,7 +58,9 @@ const App: React.FC = () => {
       : participants;
 
     setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * filteredParticipants.length);
+      const randomIndex = Math.floor(
+        Math.random() * filteredParticipants.length
+      );
       const winnerPicked = filteredParticipants[randomIndex];
       setWinner(winnerPicked);
       setIsShuffling(false);
@@ -100,6 +104,11 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-700 flex items-center justify-center p-6">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg text-center">
+        <nav className="mb-4">
+          <Link to="/historial" className="text-blue-500 hover:underline">
+            Ver Historial de Ganadores
+          </Link>
+        </nav>
         {step === 1 ? (
           <>
             <h1 className="text-4xl font-extrabold mb-6 text-gray-900">
@@ -220,6 +229,15 @@ const App: React.FC = () => {
         )}
       </div>
     </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<AppContent />} />
+      <Route path="/historial" element={<Historial />} />
+    </Routes>
   );
 };
 
